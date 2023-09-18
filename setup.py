@@ -28,7 +28,8 @@ setup(
     license='MIT License',
     install_requires=[
         "happy-tools",
-        "keras",
+        "tensorflow==2.11.0",
+        "matplotlib",
     ],
     package_dir={
         '': 'src'

@@ -1,10 +1,7 @@
 import os
 import numpy as np
-import tensorflow as tf
 from keras.optimizers import Adam
-from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, concatenate, GlobalAveragePooling2D, Dense, Reshape, Flatten
-from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
 from tensorflow import keras
 from happy.model.imaging_model import ImagingModel
 from keras.callbacks import ReduceLROnPlateau

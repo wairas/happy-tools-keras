@@ -3,6 +3,7 @@ from matplotlib import cm
 
 import os
 import numpy as np
+import traceback
 
 import argparse
 from happy.splitter.happy_splitter import HappySplitter
@@ -12,9 +13,28 @@ from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.preprocessors.preprocessors import PadPreprocessor, PCAPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor
 
 
+def create_prediction_image(prediction):
+    # Create a grayscale prediction image
+    prediction = np.argmax(prediction, axis=-1)
+    prediction_image = Image.fromarray(prediction.astype(np.uint8))
+    return prediction_image
+
+
+def create_false_color_image(prediction, num_clusters):
+    # Create a false color prediction image
+    prediction = np.argmax(prediction, axis=-1)
+    cmap = cm.get_cmap('viridis', num_clusters)
+    false_color = cmap(prediction)
+    false_color_image = Image.fromarray((false_color[:, :, :3] * 255).astype(np.uint8))
+    return false_color_image
+
+
 def main():
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Build a Keras-based pixel segmentation model.')
+    parser = argparse.ArgumentParser(
+        description='Build a Keras-based pixel segmentation model.',
+        prog="happy-keras-unsupervised-build",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('data_folder', type=str, help='Path to the data folder')
     parser.add_argument('target', type=str, help='Name of the target variable')
     parser.add_argument('happy_splitter_file', type=str, help='Path to JSON file containing splits')
@@ -66,20 +86,19 @@ def main():
         false_color_image.save(os.path.join(args.output_folder, f'false_color_{i}.png'))
 
 
-def create_prediction_image(prediction):
-    # Create a grayscale prediction image
-    prediction = np.argmax(prediction, axis=-1)
-    prediction_image = Image.fromarray(prediction.astype(np.uint8))
-    return prediction_image
+def sys_main() -> int:
+    """
+    Runs the main function using the system cli arguments, and
+    returns a system error code.
 
-
-def create_false_color_image(prediction, num_clusters):
-    # Create a false color prediction image
-    prediction = np.argmax(prediction, axis=-1)
-    cmap = cm.get_cmap('viridis', num_clusters)
-    false_color = cmap(prediction)
-    false_color_image = Image.fromarray((false_color[:, :, :3] * 255).astype(np.uint8))
-    return false_color_image
+    :return: 0 for success, 1 for failure.
+    """
+    try:
+        main()
+        return 0
+    except Exception:
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":

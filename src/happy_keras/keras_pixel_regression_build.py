@@ -2,6 +2,7 @@ from PIL import Image
 import numpy as np
 import argparse
 import os
+import traceback
 
 from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, StandardScalerPreprocessor
 from happy.splitter.happy_splitter import HappySplitter
@@ -10,8 +11,48 @@ from happy.evaluators.regression_evaluator import RegressionEvaluator
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 
 
+def create_false_color_image(predictions, min_actual, max_actual):
+    # Find the minimum and maximum values of actuals
+    predictions = predictions[:, :, 0]
+
+    # Create an empty array for the false color image
+    false_color = np.zeros((predictions.shape[0], predictions.shape[1], 4), dtype=np.uint8)
+
+    max_actual = max_actual * 1.15
+    for i in range(predictions.shape[0]):
+        for j in range(predictions.shape[1]):
+            prediction = predictions[i, j]
+
+            if prediction <= 0:
+                # Zero value is transparent
+                # color = [0, 0, 0, 0]
+                color = [0, 0, 255, 255]
+            elif prediction < min_actual:
+                # Values below the minimum are blue
+                color = [0, 0, 255, 255]
+            elif prediction > max_actual:
+                # Values above the maximum are red
+                color = [255, 0, 0, 255]
+            else:
+                # Calculate the gradient color based on the range of actual values
+                gradient = (prediction - min_actual) / (max_actual - min_actual)
+                r = int(255 * (1 - gradient))
+                g = int(255 * (1 - gradient))
+                b = int(128 * gradient)
+                color = [r, g, b, 255]
+
+            # Assign the color to the false color image
+            false_color[i, j] = color
+
+    false_color_image = Image.fromarray(false_color)
+    return false_color_image
+
+
 def main():
-    parser = argparse.ArgumentParser(description='Evaluate a Keras-based pixel regression model.')
+    parser = argparse.ArgumentParser(
+        description='Evaluate a Keras-based pixel regression model.',
+        prog="happy-keras-segmentation-build",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('data_folder', type=str, help='Path to the data folder')
     parser.add_argument('target', type=str, help='Name of the target variable')
     parser.add_argument('happy_splitter_file', type=str, help='Path to JSON file containing splits')
@@ -30,7 +71,6 @@ def main():
     SNVpp = SNVPreprocessor()
     SGpp = DerivativePreprocessor(window_length=15, deriv=1)
     std = StandardScalerPreprocessor()
-    #PCApp = PCAPreprocessor(components=5, percent_pixels=20)
     pp = MultiPreprocessor(preprocessor_list=[w, clean, SNVpp, SGpp, pp])
     
     # Create a FullRegionSelector instance
@@ -61,54 +101,24 @@ def main():
         if np.isnan(min_actual) or np.isnan(max_actual) or min_actual==max_actual:
             print("NaN value detected. Cannot proceed with gradient calculation.")
             continue
-        #print(actuals[i])
         false_color_image = create_false_color_image(prediction, min_actual, max_actual)
         false_color_image.save(os.path.join(args.output_folder, f'false_color_{i}.png'))
 
 
-#def create_prediction_image(prediction):
-##    # Create an image from the regression prediction
-#    prediction = (prediction * 255).astype(np.uint8)
-#    prediction_image = Image.fromarray(prediction)
-#    return prediction_image
+def sys_main() -> int:
+    """
+    Runs the main function using the system cli arguments, and
+    returns a system error code.
 
+    :return: 0 for success, 1 for failure.
+    """
+    try:
+        main()
+        return 0
+    except Exception:
+        traceback.print_exc()
+        return 1
 
-def create_false_color_image(predictions, min_actual, max_actual):
-    # Find the minimum and maximum values of actuals
-    predictions = predictions[:,:,0]
-  
-    # Create an empty array for the false color image
-    false_color = np.zeros((predictions.shape[0], predictions.shape[1], 4), dtype=np.uint8)
-
-    max_actual = max_actual * 1.15
-    for i in range(predictions.shape[0]):
-        for j in range(predictions.shape[1]):
-            prediction = predictions[i, j]
-
-            if prediction <= 0:
-                # Zero value is transparent               
-                #color = [0, 0, 0, 0]
-                color = [0, 0, 255, 255]
-            elif prediction < min_actual:
-                # Values below the minimum are blue
-                color = [0, 0, 255, 255]
-            elif prediction > max_actual:
-                # Values above the maximum are red
-                color = [255, 0, 0, 255]
-            else:
-                # Calculate the gradient color based on the range of actual values
-                gradient = (prediction - min_actual) / (max_actual - min_actual)
-                r = int(255 * (1 - gradient))
-                g = int(255 * (1 - gradient))
-                b = int(128 * gradient)
-                color = [r, g, b, 255]
-
-            # Assign the color to the false color image
-            false_color[i, j] = color
-
-    false_color_image = Image.fromarray(false_color)
-    return false_color_image
-    
 
 if __name__ == "__main__":
     main()

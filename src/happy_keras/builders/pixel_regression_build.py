@@ -6,7 +6,7 @@ import traceback
 
 from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, StandardScalerPreprocessor
 from happy.splitter.happy_splitter import HappySplitter
-from happy_keras.model.keras_pixel_regression_model import KerasPixelRegressionModel
+from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
 from happy.evaluators.regression_evaluator import RegressionEvaluator
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 

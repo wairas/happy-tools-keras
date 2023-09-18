@@ -8,7 +8,7 @@ import traceback
 import argparse
 from happy.splitter.happy_splitter import HappySplitter
 
-from happy_keras.model.keras_unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel
+from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.preprocessors.preprocessors import PadPreprocessor, PCAPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor
 

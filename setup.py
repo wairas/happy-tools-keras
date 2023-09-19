@@ -40,9 +40,9 @@ setup(
     packages=find_namespace_packages(where='src'),
     entry_points={
         "console_scripts": [
-            "happy-keras-pixel-regression-build=happy_keras.builders.pixel_regression_build:sys_main",
-            "happy-keras-segmentation-build=happy_keras.builders.segmentation_build:sys_main",
-            "happy-keras-unsupervised-build=happy_keras.builders.segmentation_build:sys_main",
+            "happy-keras-pixel-regression-build=happy_keras.console.builders.pixel_regression_build:sys_main",
+            "happy-keras-segmentation-build=happy_keras.console.builders.segmentation_build:sys_main",
+            "happy-keras-unsupervised-build=happy_keras.console.builders.segmentation_build:sys_main",
         ]
     },
     version="0.0.1",

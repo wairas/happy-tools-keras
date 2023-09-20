@@ -53,6 +53,7 @@ class KerasImageRegressionModel(ImagingModel):
         adam_optimizer = Adam(learning_rate=learning_rate)
         best_val_loss = float('inf')
         best_model_weights = None
+
         def save_best_model(epoch, logs):
             nonlocal best_val_loss, best_model_weights
             if logs['val_mae'] < best_val_loss:

@@ -163,7 +163,7 @@ class KerasPixelSegmentationModel(ImagingModel):
         model_code = generate_model_code(model, config_filepath)
 
         # Save the model code to a Python file
-        model_filename = os.path.join(output_folder, 'generated_model.py')
+        model_filename = os.path.join(folder, 'generated_model.py')
         with open(model_filename, 'w') as model_file:
             model_file.write(model_code)
 

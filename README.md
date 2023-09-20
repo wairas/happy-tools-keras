@@ -8,6 +8,10 @@ pip install git+https://github.com/wairas/happy-tools.git
 pip install git+https://github.com/wairas/happy-tools-keras.git
 ```
 
+## Docker
+
+For Docker images, please see [docker/README.md](docker/README.md).
+
 ## Commandline
 
 ### Keras Pixel Regression Build

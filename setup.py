@@ -34,9 +34,6 @@ setup(
     package_dir={
         '': 'src'
     },
-    package_data={
-        "happy_keras": ["*.png"],
-    },
     packages=find_namespace_packages(where='src'),
     entry_points={
         "console_scripts": [

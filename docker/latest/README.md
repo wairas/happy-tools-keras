@@ -21,9 +21,9 @@ docker build -t happy-tools-keras:latest .
   ```bash
   docker tag \
       happy-tools-keras:latest \
-      public-push.aml-repo.cms.waikato.ac.nz:443/happy/happy-tools-keras:latest
+      public-push.aml-repo.cms.waikato.ac.nz:443/wairas/happy-tools-keras:latest
       
-  docker push public-push.aml-repo.cms.waikato.ac.nz:443/happy/happy-tools-keras:latest
+  docker push public-push.aml-repo.cms.waikato.ac.nz:443/wairas/happy-tools-keras:latest
   ```
 
 ### Use
@@ -39,7 +39,7 @@ docker build -t happy-tools-keras:latest .
   ```bash
   docker run -u $(id -u):$(id -g) \
       -v /local/dir:/workspace \
-      -it public.aml-repo.cms.waikato.ac.nz:443/happy/happy-tools-keras:latest
+      -it public.aml-repo.cms.waikato.ac.nz:443/wairas/happy-tools-keras:latest
   ```
 
 **NB:** Replace `/local/dir` with a local directory that you want to map inside the container. 

@@ -14,7 +14,7 @@ def _read(f):
 
 setup(
     name="happy-tools-keras",
-    description="happy-tools that use the Keras library for Deep Learning on hyper-spectral images.",
+    description="happy-tools that use the Keras library for Deep Learning on hyperspectral images.",
     long_description=(
         _read('DESCRIPTION.rst') + b'\n' +
         _read('CHANGES.rst')).decode('utf-8'),

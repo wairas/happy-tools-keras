@@ -80,7 +80,7 @@ def main():
     # Fit the model
     pixel_segmentation_model.fit(id_list=train_ids, target_variable=args.target)
     
-        # Predict using the model
+       # Predict using the model
     predictions,actuals = pixel_segmentation_model.predict(id_list=test_ids, return_actuals=True)
     eval = ClassificationEvaluator(happy_splitter, pixel_segmentation_model, args.target)
     eval.accumulate_stats(predictions,actuals,0,0)

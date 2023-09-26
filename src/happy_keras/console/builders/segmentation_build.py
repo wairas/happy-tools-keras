@@ -33,11 +33,13 @@ def create_false_color_image(prediction, mapping):
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(
-        description='Build a Keras-based pixel segmentation model.')
-    parser.add_argument('data_folder', type=str, help='Path to the data folder')
-    parser.add_argument('target', type=str, help='Name of the target variable')
-    parser.add_argument('happy_splitter_file', type=str, help='Path to JSON file containing splits')
-    parser.add_argument('output_folder', type=str, help='Path to the output folder')
+        description='Build a Keras-based pixel segmentation model.',
+        prog="happy-keras-segmentation-build",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
+    parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
+    parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
+    parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
 
     args = parser.parse_args()
 
@@ -49,18 +51,14 @@ def main():
         3: 3
         # Add more classes and their corresponding integer labels here
     }
-    
-    #pp = PadPreprocessor(width=128, height=128, pad_value=0)
-    
+
+    # preprocessing
     pp = PadPreprocessor(width=128, height=128, pad_value=0)
     subset_indices = list(range(60, 190))
     w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
-
     clean = SpectralNoiseInterpolator()
     SNVpp = SNVPreprocessor()
     SGpp = DerivativePreprocessor(window_length=15, deriv=1)
-    std = StandardScalerPreprocessor()
-    #PCApp = PCAPreprocessor(components=5, percent_pixels=20)
     pp = MultiPreprocessor(preprocessor_list=[w, clean, SNVpp, SGpp, pp])
     
     # Create the output folder if it doesn't exist
@@ -80,7 +78,7 @@ def main():
     # Fit the model
     pixel_segmentation_model.fit(id_list=train_ids, target_variable=args.target)
     
-       # Predict using the model
+    # Predict using the model
     predictions,actuals = pixel_segmentation_model.predict(id_list=test_ids, return_actuals=True)
     eval = ClassificationEvaluator(happy_splitter, pixel_segmentation_model, args.target)
     eval.accumulate_stats(predictions,actuals,0,0)

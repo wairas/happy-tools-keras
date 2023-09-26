@@ -17,58 +17,61 @@ For Docker images, please see [docker/README.md](docker/README.md).
 ### Keras Pixel Regression Build
 
 ```
-usage: happy-keras-pixel-regression-build [-h]
-                                          data_folder target
-                                          happy_splitter_file output_folder
+usage: happy-keras-pixel-regression-build [-h] -d DATA_FOLDER -t TARGET -s
+                                          HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Evaluate a Keras-based pixel regression model.
 
-positional arguments:
-  data_folder          Path to the data folder
-  target               Name of the target variable
-  happy_splitter_file  Path to JSON file containing splits
-  output_folder        Path to the output folder
-
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
+  -d DATA_FOLDER, --data_folder DATA_FOLDER
+                        Path to the data folder (default: None)
+  -t TARGET, --target TARGET
+                        Name of the target variable (default: None)
+  -s HAPPY_SPLITTER_FILE, --happy_splitter_file HAPPY_SPLITTER_FILE
+                        Path to JSON file containing splits (default: None)
+  -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
+                        Path to the output folder (default: None)
 ```
 
 
 ### Keras Segmentation Build
 
 ```
-usage: keras_segmentation_build.py [-h]
-                                   data_folder target happy_splitter_file
-                                   output_folder
+usage: happy-keras-segmentation-build [-h] -d DATA_FOLDER -t TARGET -s
+                                      HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Build a Keras-based pixel segmentation model.
 
-positional arguments:
-  data_folder          Path to the data folder
-  target               Name of the target variable
-  happy_splitter_file  Path to JSON file containing splits
-  output_folder        Path to the output folder
-
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
+  -d DATA_FOLDER, --data_folder DATA_FOLDER
+                        Path to the data folder (default: None)
+  -t TARGET, --target TARGET
+                        Name of the target variable (default: None)
+  -s HAPPY_SPLITTER_FILE, --happy_splitter_file HAPPY_SPLITTER_FILE
+                        Path to JSON file containing splits (default: None)
+  -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
+                        Path to the output folder (default: None)
 ```
 
 
 ### Keras Unsupervised Build
 
 ```
-usage: happy-keras-unsupervised-build [-h]
-                                      data_folder target happy_splitter_file
-                                      output_folder
+usage: happy-keras-unsupervised-build [-h] -d DATA_FOLDER -t TARGET -s
+                                      HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Build a Keras-based pixel segmentation model.
 
-positional arguments:
-  data_folder          Path to the data folder
-  target               Name of the target variable
-  happy_splitter_file  Path to JSON file containing splits
-  output_folder        Path to the output folder
-
 optional arguments:
-  -h, --help           show this help message and exit
+  -h, --help            show this help message and exit
+  -d DATA_FOLDER, --data_folder DATA_FOLDER
+                        Path to the data folder (default: None)
+  -t TARGET, --target TARGET
+                        Name of the target variable (default: None)
+  -s HAPPY_SPLITTER_FILE, --happy_splitter_file HAPPY_SPLITTER_FILE
+                        Path to JSON file containing splits (default: None)
+  -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
+                        Path to the output folder (default: None)
 ```

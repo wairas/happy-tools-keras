@@ -1,5 +1,7 @@
 import numpy as np
 import tensorflow as tf
+from PIL import Image
+from matplotlib import cm
 from keras.optimizers import Adam
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, concatenate, Dense, Flatten, Multiply, Lambda
@@ -163,3 +165,19 @@ class KerasUnsupervisedSegmentationModel(ImagingModel):
         return model
 
     # Other methods (save, load, etc.) can remain unchanged or be adapted as needed
+
+
+def create_prediction_image(prediction):
+    # Create a grayscale prediction image
+    prediction = np.argmax(prediction, axis=-1)
+    prediction_image = Image.fromarray(prediction.astype(np.uint8))
+    return prediction_image
+
+
+def create_false_color_image(prediction, num_clusters):
+    # Create a false color prediction image
+    prediction = np.argmax(prediction, axis=-1)
+    cmap = cm.get_cmap('viridis', num_clusters)
+    false_color = cmap(prediction)
+    false_color_image = Image.fromarray((false_color[:, :, :3] * 255).astype(np.uint8))
+    return false_color_image

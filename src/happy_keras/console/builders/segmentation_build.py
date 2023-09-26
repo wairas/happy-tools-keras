@@ -1,33 +1,13 @@
-from PIL import Image
-from matplotlib import cm
-
+import argparse
 import os
-import numpy as np
 import traceback
 
-import argparse
-from happy.splitter.happy_splitter import HappySplitter
-
-from happy_keras.model.segmentation_model import KerasPixelSegmentationModel
-from happy.region_extractors.full_region_extractor import FullRegionExtractor
-from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, StandardScalerPreprocessor
 from happy.evaluators.classification_evaluator import ClassificationEvaluator
-
-
-def create_prediction_image(prediction):
-    # Create a grayscale prediction image
-    prediction = np.argmax(prediction, axis=-1)
-    prediction_image = Image.fromarray(prediction.astype(np.uint8))
-    return prediction_image
-
-
-def create_false_color_image(prediction, mapping):
-    # Create a false color prediction image
-    prediction = np.argmax(prediction, axis=-1)
-    cmap = cm.get_cmap('viridis', len(mapping))
-    false_color = cmap(prediction)
-    false_color_image = Image.fromarray((false_color[:, :, :3] * 255).astype(np.uint8))
-    return false_color_image
+from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, \
+    MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor
+from happy.region_extractors.full_region_extractor import FullRegionExtractor
+from happy.splitter.happy_splitter import HappySplitter
+from happy_keras.model.segmentation_model import KerasPixelSegmentationModel, create_false_color_image, create_prediction_image
 
 
 def main():
@@ -79,10 +59,10 @@ def main():
     pixel_segmentation_model.fit(id_list=train_ids, target_variable=args.target)
     
     # Predict using the model
-    predictions,actuals = pixel_segmentation_model.predict(id_list=test_ids, return_actuals=True)
-    eval = ClassificationEvaluator(happy_splitter, pixel_segmentation_model, args.target)
-    eval.accumulate_stats(predictions,actuals,0,0)
-    eval.calculate_and_show_metrics()
+    predictions, actuals = pixel_segmentation_model.predict(id_list=test_ids, return_actuals=True)
+    evl = ClassificationEvaluator(happy_splitter, pixel_segmentation_model, args.target)
+    evl.accumulate_stats(predictions, actuals, 0, 0)
+    evl.calculate_and_show_metrics()
 
     # Save the predictions as PNG images
     for i, prediction in enumerate(predictions):

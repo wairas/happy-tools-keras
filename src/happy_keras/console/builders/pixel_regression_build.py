@@ -1,4 +1,3 @@
-from PIL import Image
 import numpy as np
 import argparse
 import os
@@ -6,46 +5,10 @@ import traceback
 
 from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, StandardScalerPreprocessor
 from happy.splitter.happy_splitter import HappySplitter
+from happy.model.spectroscopy_model import create_false_color_image
 from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
 from happy.evaluators.regression_evaluator import RegressionEvaluator
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
-
-
-def create_false_color_image(predictions, min_actual, max_actual):
-    # Find the minimum and maximum values of actuals
-    predictions = predictions[:, :, 0]
-
-    # Create an empty array for the false color image
-    false_color = np.zeros((predictions.shape[0], predictions.shape[1], 4), dtype=np.uint8)
-
-    max_actual = max_actual * 1.15
-    for i in range(predictions.shape[0]):
-        for j in range(predictions.shape[1]):
-            prediction = predictions[i, j]
-
-            if prediction <= 0:
-                # Zero value is transparent
-                # color = [0, 0, 0, 0]
-                color = [0, 0, 255, 255]
-            elif prediction < min_actual:
-                # Values below the minimum are blue
-                color = [0, 0, 255, 255]
-            elif prediction > max_actual:
-                # Values above the maximum are red
-                color = [255, 0, 0, 255]
-            else:
-                # Calculate the gradient color based on the range of actual values
-                gradient = (prediction - min_actual) / (max_actual - min_actual)
-                r = int(255 * (1 - gradient))
-                g = int(255 * (1 - gradient))
-                b = int(128 * gradient)
-                color = [r, g, b, 255]
-
-            # Assign the color to the false color image
-            false_color[i, j] = color
-
-    false_color_image = Image.fromarray(false_color)
-    return false_color_image
 
 
 def main():
@@ -88,9 +51,9 @@ def main():
     # Predict using the model
     predictions, actuals = pixel_regression_model.predict(id_list=test_ids, return_actuals=True)
 
-    eval = RegressionEvaluator(happy_splitter, pixel_regression_model, args.target)
-    eval.accumulate_stats(predictions,actuals,0,0)
-    eval.calculate_and_show_metrics()
+    evl = RegressionEvaluator(happy_splitter, pixel_regression_model, args.target)
+    evl.accumulate_stats(predictions,actuals,0,0)
+    evl.calculate_and_show_metrics()
 
     max_actual = np.nanmax(actuals)
     min_actual = np.nanmin(actuals)
@@ -121,4 +84,3 @@ def sys_main() -> int:
 
 if __name__ == "__main__":
     main()
-

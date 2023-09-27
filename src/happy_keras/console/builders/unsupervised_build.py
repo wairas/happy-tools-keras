@@ -12,7 +12,7 @@ from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedS
 def main():
     # Parse command-line arguments
     parser = argparse.ArgumentParser(
-        description='Build a Keras-based pixel segmentation model.',
+        description='Build a Keras-based unsupervised segmentation model.',
         prog="happy-keras-unsupervised-build",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)

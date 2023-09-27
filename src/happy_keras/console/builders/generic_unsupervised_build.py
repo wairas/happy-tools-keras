@@ -20,14 +20,12 @@ def main():
     parser.add_argument('-P', '--python_file', type=str, help='The Python module with the model class to load')
     parser.add_argument('-c', '--python_class', type=str, help='The name of the model class to load')
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
+    parser.add_argument('-n', '--num_clusters', type=int, default=4, help='The number of clusters to use')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
 
     args = parser.parse_args()
     
-    # Define the number of clusters
-    num_clusters = 4  # You can adjust this based on your data
-
     # Create the output folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
 
@@ -42,7 +40,8 @@ def main():
     c = load_class(args.python_file, "happy_keras.generic_pixel_regression." + str(int(round(time.time() * 1000))),
                    args.python_class)
     if issubclass(c, KerasUnsupervisedSegmentationModel):
-        unsupervised_segmentation_model = GenericKerasUnsupervisedSegmentationModel.instantiate(c, args.happy_data_base_dir, args.target_value)
+        unsupervised_segmentation_model = GenericKerasUnsupervisedSegmentationModel.instantiate(
+            c, args.happy_data_base_dir, args.target_value)
     else:
         raise Exception("Unsupported base model class: %s" % str(c))
 
@@ -57,7 +56,7 @@ def main():
         prediction_image = create_prediction_image(prediction)
         prediction_image.save(os.path.join(args.output_folder, f'prediction_{i}.png'))
 
-        false_color_image = create_false_color_image(prediction, num_clusters)
+        false_color_image = create_false_color_image(prediction, args.num_clusters)
         false_color_image.save(os.path.join(args.output_folder, f'false_color_{i}.png'))
 
 

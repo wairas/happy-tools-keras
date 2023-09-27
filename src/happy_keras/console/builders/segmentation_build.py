@@ -18,28 +18,25 @@ def main():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
+    parser.add_argument('-n', '--num_classes', type=int, default=4, help='The number of classes, used for generating the mapping')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
 
     args = parser.parse_args()
 
     # there is an optional mapping file in happy data now, but TODO here.
-    mapping = {
-        0: 0,
-        1: 1,
-        2: 2,
-        3: 3
-        # Add more classes and their corresponding integer labels here
-    }
+    mapping = {}
+    for i in range(args.num_classes):
+        mapping[i] = i
 
     # preprocessing
     pp = PadPreprocessor(width=128, height=128, pad_value=0)
     subset_indices = list(range(60, 190))
     w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
     clean = SpectralNoiseInterpolator()
-    SNVpp = SNVPreprocessor()
-    SGpp = DerivativePreprocessor(window_length=15, deriv=1)
-    pp = MultiPreprocessor(preprocessor_list=[w, clean, SNVpp, SGpp, pp])
+    snv = SNVPreprocessor()
+    sg = DerivativePreprocessor(window_length=15, deriv=1)
+    multi = MultiPreprocessor(preprocessor_list=[w, clean, snv, sg, pp])
     
     # Create the output folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
@@ -50,7 +47,9 @@ def main():
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0,0)
 
     # Create a KerasPixelSegmentationModel instance
-    pixel_segmentation_model = KerasPixelSegmentationModel(data_folder=args.data_folder, target=args.target, region_selector=region_selector, mapping=mapping, happy_preprocessor=pp)
+    pixel_segmentation_model = KerasPixelSegmentationModel(
+        data_folder=args.data_folder, target=args.target, region_selector=region_selector,
+        mapping=mapping, happy_preprocessor=multi)
 
     # Load sample IDs (you can modify this based on your folder structure)
     #sample_ids = [f.name for f in os.scandir(args.data_folder) if f.is_dir()]

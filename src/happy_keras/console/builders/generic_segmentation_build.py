@@ -21,32 +21,30 @@ def main():
     parser.add_argument('-P', '--python_file', type=str, help='The Python module with the model class to load')
     parser.add_argument('-c', '--python_class', type=str, help='The name of the model class to load')
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
+    parser.add_argument('-n', '--num_classes', type=int, default=4, help='The number of classes, used for generating the mapping')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
 
     args = parser.parse_args()
 
     # there is an optional mapping file in happy data now, but TODO here.
-    mapping = {
-        0: 0,
-        1: 1,
-        2: 2,
-        3: 3
-        # Add more classes and their corresponding integer labels here
-    }
+    mapping = {}
+    for i in range(args.num_classes):
+        mapping[i] = i
 
     # Create the output folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create a HappySplitter instance
     happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
-    train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0,0)
+    train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
 
     # create model
     c = load_class(args.python_file, "happy_keras.generic_pixel_regression." + str(int(round(time.time() * 1000))),
                    args.python_class)
     if issubclass(c, KerasPixelSegmentationModel):
-        pixel_segmentation_model = GenericKerasPixelSegmentationModel.instantiate(c, args.happy_data_base_dir, args.target_value)
+        pixel_segmentation_model = GenericKerasPixelSegmentationModel.instantiate(
+            c, args.happy_data_base_dir, args.target_value)
     else:
         raise Exception("Unsupported base model class: %s" % str(c))
 

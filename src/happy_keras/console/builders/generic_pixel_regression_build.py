@@ -37,7 +37,8 @@ def main():
     # create model
     c = load_class(args.python_file, "happy_keras.generic_pixel_regression." + str(int(round(time.time() * 1000))), args.python_class)
     if issubclass(c, KerasPixelRegressionModel):
-        pixel_regression_model = GenericKerasPixelRegressionModel.instantiate(c, args.happy_data_base_dir, args.target_value)
+        pixel_regression_model = GenericKerasPixelRegressionModel.instantiate(
+            c, args.happy_data_base_dir, args.target_value)
     else:
         raise Exception("Unsupported base model class: %s" % str(c))
 
@@ -48,7 +49,7 @@ def main():
     predictions, actuals = pixel_regression_model.predict(id_list=test_ids, return_actuals=True)
 
     evl = RegressionEvaluator(happy_splitter, pixel_regression_model, args.target)
-    evl.accumulate_stats(predictions,actuals,0,0)
+    evl.accumulate_stats(predictions,actuals, 0, 0)
     evl.calculate_and_show_metrics()
 
     max_actual = np.nanmax(actuals)
@@ -56,7 +57,7 @@ def main():
 
     # Save the predictions as PNG images
     for i, prediction in enumerate(predictions):
-        if np.isnan(min_actual) or np.isnan(max_actual) or min_actual==max_actual:
+        if np.isnan(min_actual) or np.isnan(max_actual) or (min_actual == max_actual):
             print("NaN value detected. Cannot proceed with gradient calculation.")
             continue
         false_color_image = create_false_color_image(prediction, min_actual, max_actual)

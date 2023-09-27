@@ -31,9 +31,9 @@ def main():
     w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
 
     clean = SpectralNoiseInterpolator()
-    SNVpp = SNVPreprocessor()
-    SGpp = DerivativePreprocessor(window_length=15, deriv=1)
-    pp = MultiPreprocessor(preprocessor_list=[w, clean, SNVpp, SGpp, pp])
+    snv = SNVPreprocessor()
+    sg = DerivativePreprocessor(window_length=15, deriv=1)
+    multi = MultiPreprocessor(preprocessor_list=[w, clean, snv, sg, pp])
     
     # Create a FullRegionSelector instance
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
@@ -43,7 +43,9 @@ def main():
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
 
     # Create a KerasPixelRegressionModel instance
-    pixel_regression_model = KerasPixelRegressionModel(data_folder=args.data_folder, target=args.target,region_selector=region_selector, happy_preprocessor=pp)
+    pixel_regression_model = KerasPixelRegressionModel(
+        data_folder=args.data_folder, target=args.target, region_selector=region_selector,
+        happy_preprocessor=multi)
 
     # Fit the model
     pixel_regression_model.fit(id_list=train_ids)
@@ -52,7 +54,7 @@ def main():
     predictions, actuals = pixel_regression_model.predict(id_list=test_ids, return_actuals=True)
 
     evl = RegressionEvaluator(happy_splitter, pixel_regression_model, args.target)
-    evl.accumulate_stats(predictions,actuals,0,0)
+    evl.accumulate_stats(predictions, actuals, 0, 0)
     evl.calculate_and_show_metrics()
 
     max_actual = np.nanmax(actuals)
@@ -60,7 +62,7 @@ def main():
 
     # Save the predictions as PNG images
     for i, prediction in enumerate(predictions):
-        if np.isnan(min_actual) or np.isnan(max_actual) or min_actual==max_actual:
+        if np.isnan(min_actual) or np.isnan(max_actual) or (min_actual == max_actual):
             print("NaN value detected. Cannot proceed with gradient calculation.")
             continue
         false_color_image = create_false_color_image(prediction, min_actual, max_actual)

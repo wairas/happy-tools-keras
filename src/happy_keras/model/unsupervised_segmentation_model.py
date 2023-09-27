@@ -47,7 +47,7 @@ class ContrastiveDivergenceLoss(tf.keras.losses.Loss):
 
 
 class KerasUnsupervisedSegmentationModel(ImagingModel):
-    def __init__(self, data_folder, target, num_clusters, happy_preprocessor=None, additional_meta_data=None, region_selector=None, mapping=None):
+    def __init__(self, data_folder, target, num_clusters=2, happy_preprocessor=None, additional_meta_data=None, region_selector=None, mapping=None):
         super().__init__(data_folder, target, happy_preprocessor, additional_meta_data, region_selector)
         self.model = None
         self.mapping = mapping

@@ -3,7 +3,8 @@ import argparse
 import os
 import traceback
 
-from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, StandardScalerPreprocessor
+from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, \
+    MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, CropPreprocessor, DownsamplePreprocessor
 from happy.splitter.happy_splitter import HappySplitter
 from happy.model.spectroscopy_model import create_false_color_image
 from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
@@ -25,16 +26,18 @@ def main():
 
     # Create the output folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
-    
-    pp = PadPreprocessor(width=128, height=128, pad_value=0)
+
+    # Create preprocessors
+    ppp = PadPreprocessor(width=320, height=648, pad_value=0)
     subset_indices = list(range(60, 190))
     w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
-
+    crop = CropPreprocessor(width=320, height=648, pad=False)
     clean = SpectralNoiseInterpolator()
     snv = SNVPreprocessor()
     sg = DerivativePreprocessor(window_length=15, deriv=1)
-    multi = MultiPreprocessor(preprocessor_list=[w, clean, snv, sg, pp])
-    
+    ds = DownsamplePreprocessor()
+    multi = MultiPreprocessor(preprocessor_list=[crop, w, clean, snv, sg, ppp, ds])
+
     # Create a FullRegionSelector instance
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
 

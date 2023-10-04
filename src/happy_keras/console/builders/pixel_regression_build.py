@@ -1,15 +1,29 @@
-import numpy as np
 import argparse
 import os
 import traceback
 
-from happy.preprocessors.preprocessors import SpectralNoiseInterpolator, PadPreprocessor, SNVPreprocessor, \
-    MultiPreprocessor, DerivativePreprocessor, WavelengthSubsetPreprocessor, CropPreprocessor, DownsamplePreprocessor
-from happy.splitter.happy_splitter import HappySplitter
-from happy.model.spectroscopy_model import create_false_color_image
-from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
+import numpy as np
+
 from happy.evaluators.regression_evaluator import RegressionEvaluator
+from happy.model.spectroscopy_model import create_false_color_image
+from happy.preprocessors.preprocessor import Preprocessor
+from happy.preprocessors.preprocessors import MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
+from happy.splitter.happy_splitter import HappySplitter
+from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
+
+
+def default_preprocessors() -> str:
+    args = [
+        "crop -W 320 -H 648"
+        "wavelength-subset -f 60 -t 189",
+        "sni",
+        "snv",
+        "derivative -w 15 -d 1",
+        "pad -W 320 -H 648 -v 0",
+        "down-sample",
+    ]
+    return " ".join(args)
 
 
 def main():
@@ -18,6 +32,7 @@ def main():
         prog="happy-keras-pixel-regression-build",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
+    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
@@ -28,15 +43,7 @@ def main():
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create preprocessors
-    ppp = PadPreprocessor(width=320, height=648, pad_value=0)
-    subset_indices = list(range(60, 190))
-    w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
-    crop = CropPreprocessor(width=320, height=648, pad=False)
-    clean = SpectralNoiseInterpolator()
-    snv = SNVPreprocessor()
-    sg = DerivativePreprocessor(window_length=15, deriv=1)
-    ds = DownsamplePreprocessor()
-    multi = MultiPreprocessor(preprocessor_list=[crop, w, clean, snv, sg, ppp, ds])
+    preproc = MultiPreprocessor(preprocessor_list=Preprocessor.parse_preprocessors(args.preprocessors))
 
     # Create a FullRegionSelector instance
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
@@ -48,7 +55,7 @@ def main():
     # Create a KerasPixelRegressionModel instance
     pixel_regression_model = KerasPixelRegressionModel(
         data_folder=args.data_folder, target=args.target, region_selector=region_selector,
-        happy_preprocessor=multi)
+        happy_preprocessor=preproc)
 
     # Fit the model
     pixel_regression_model.fit(id_list=train_ids)

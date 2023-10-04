@@ -2,11 +2,22 @@ import argparse
 import os
 import traceback
 
-from happy.preprocessors.preprocessors import PadPreprocessor, PCAPreprocessor, SNVPreprocessor, MultiPreprocessor, \
-    DerivativePreprocessor, WavelengthSubsetPreprocessor
+from happy.preprocessors.preprocessor import Preprocessor
+from happy.preprocessors.preprocessors import MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.splitter.happy_splitter import HappySplitter
-from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, create_prediction_image, create_false_color_image
+from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, \
+    create_prediction_image, create_false_color_image
+
+
+def default_preprocessors() -> str:
+    args = [
+        "wavelength-subset -f 60 -t 189",
+        "snv",
+        "derivative",
+        "pad -W 128 -H 128 -v 0",
+    ]
+    return " ".join(args)
 
 
 def main():
@@ -16,22 +27,17 @@ def main():
         prog="happy-keras-unsupervised-build",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
+    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
     parser.add_argument('-n', '--num_clusters', type=int, default=4, help='The number of clusters to use')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
 
     args = parser.parse_args()
-    
-    pp = PadPreprocessor(width=128, height=128, pad_value=0)
-    subset_indices = list(range(60, 190))
-    w = WavelengthSubsetPreprocessor(subset_indices=subset_indices)
 
-    snv = SNVPreprocessor()
-    sg = DerivativePreprocessor()
-    pca = PCAPreprocessor(components=5, percent_pixels=20)
-    multi = MultiPreprocessor(preprocessor_list=[w, snv, sg, pca, pp])
-    
+    # preprocessors
+    preproc = MultiPreprocessor(preprocessor_list=Preprocessor.parse_preprocessors(args.preprocessors))
+
     # Create the output folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
 
@@ -43,7 +49,7 @@ def main():
     # Create a KerasUnsupervisedSegmentationModel instance
     unsupervised_segmentation_model = KerasUnsupervisedSegmentationModel(
         data_folder=args.data_folder, target=args.target, num_clusters=args.num_clusters,
-        region_selector=region_selector, happy_preprocessor=multi)
+        region_selector=region_selector, happy_preprocessor=preproc)
 
     # Load sample IDs (you can modify this based on your folder structure)
     # sample_ids = [f.name for f in os.scandir(args.data_folder) if f.is_dir()]

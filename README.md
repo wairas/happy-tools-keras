@@ -17,7 +17,8 @@ For Docker images, please see [docker/README.md](docker/README.md).
 ### Keras Pixel Regression Build
 
 ```
-usage: happy-keras-pixel-regression-build [-h] -d DATA_FOLDER -t TARGET -s
+usage: happy-keras-pixel-regression-build [-h] -d DATA_FOLDER
+                                          [-P PREPROCESSORS] -t TARGET -s
                                           HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Evaluate a Keras-based pixel regression model.
@@ -26,6 +27,11 @@ optional arguments:
   -h, --help            show this help message and exit
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
+  -P PREPROCESSORS, --preprocessors PREPROCESSORS
+                        The preprocessors to apply to the data (default: crop
+                        -W 320 -H 648wavelength-subset -f 60 -t 189 sni snv
+                        derivative -w 15 -d 1 pad -W 320 -H 648 -v 0 down-
+                        sample)
   -t TARGET, --target TARGET
                         Name of the target variable (default: None)
   -s HAPPY_SPLITTER_FILE, --happy_splitter_file HAPPY_SPLITTER_FILE
@@ -38,9 +44,9 @@ optional arguments:
 ### Keras Segmentation Build
 
 ```
-usage: happy-keras-segmentation-build [-h] -d DATA_FOLDER -t TARGET
-                                      [-n NUM_CLASSES] -s HAPPY_SPLITTER_FILE
-                                      -o OUTPUT_FOLDER
+usage: happy-keras-segmentation-build [-h] -d DATA_FOLDER [-P PREPROCESSORS]
+                                      -t TARGET [-n NUM_CLASSES] -s
+                                      HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Build a Keras-based pixel segmentation model.
 
@@ -48,6 +54,10 @@ optional arguments:
   -h, --help            show this help message and exit
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
+  -P PREPROCESSORS, --preprocessors PREPROCESSORS
+                        The preprocessors to apply to the data (default:
+                        wavelength-subset -f 60 -t 189 sni snv derivative -w
+                        15 -d 1 pad -W 128 -H 128 -v 0)
   -t TARGET, --target TARGET
                         Name of the target variable (default: None)
   -n NUM_CLASSES, --num_classes NUM_CLASSES
@@ -63,9 +73,9 @@ optional arguments:
 ### Keras Unsupervised Build
 
 ```
-usage: happy-keras-unsupervised-build [-h] -d DATA_FOLDER -t TARGET
-                                      [-n NUM_CLUSTERS] -s HAPPY_SPLITTER_FILE
-                                      -o OUTPUT_FOLDER
+usage: happy-keras-unsupervised-build [-h] -d DATA_FOLDER [-P PREPROCESSORS]
+                                      -t TARGET [-n NUM_CLUSTERS] -s
+                                      HAPPY_SPLITTER_FILE -o OUTPUT_FOLDER
 
 Build a Keras-based unsupervised segmentation model.
 
@@ -73,6 +83,10 @@ optional arguments:
   -h, --help            show this help message and exit
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
+  -P PREPROCESSORS, --preprocessors PREPROCESSORS
+                        The preprocessors to apply to the data (default:
+                        wavelength-subset -f 60 -t 189 snv derivative pad -W
+                        128 -H 128 -v 0)
   -t TARGET, --target TARGET
                         Name of the target variable (default: None)
   -n NUM_CLUSTERS, --num_clusters NUM_CLUSTERS

@@ -5,7 +5,7 @@ import traceback
 
 from happy.base.core import load_class
 from happy.evaluators import ClassificationEvaluator
-from happy.splitter.happy_splitter import HappySplitter
+from happy.splitters import HappySplitter
 from happy_keras.model.generic import GenericKerasPixelSegmentationModel
 from happy_keras.model.segmentation_model import KerasPixelSegmentationModel, create_false_color_image, \
     create_prediction_image

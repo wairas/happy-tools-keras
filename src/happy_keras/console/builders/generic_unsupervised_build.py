@@ -4,7 +4,7 @@ import time
 import traceback
 
 from happy.base.core import load_class
-from happy.splitter.happy_splitter import HappySplitter
+from happy.splitters import HappySplitter
 from happy_keras.model.generic import GenericKerasUnsupervisedSegmentationModel
 from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, \
     create_prediction_image, create_false_color_image

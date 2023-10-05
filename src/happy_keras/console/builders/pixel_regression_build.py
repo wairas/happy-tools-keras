@@ -8,7 +8,7 @@ from happy.evaluators import RegressionEvaluator
 from happy.model.spectroscopy_model import create_false_color_image
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
-from happy.splitter.happy_splitter import HappySplitter
+from happy.splitters import HappySplitter
 from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
 
 

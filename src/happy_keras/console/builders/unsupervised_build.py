@@ -3,7 +3,7 @@ import os
 import traceback
 
 from happy.preprocessors import Preprocessor, MultiPreprocessor
-from happy.region_extractors.full_region_extractor import FullRegionExtractor
+from happy.region_extractors import FullRegionExtractor
 from happy.splitter.happy_splitter import HappySplitter
 from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, \
     create_prediction_image, create_false_color_image

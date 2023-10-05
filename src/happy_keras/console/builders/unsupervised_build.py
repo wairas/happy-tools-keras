@@ -2,8 +2,7 @@ import argparse
 import os
 import traceback
 
-from happy.preprocessors.preprocessor import Preprocessor
-from happy.preprocessors.preprocessors import MultiPreprocessor
+from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.splitter.happy_splitter import HappySplitter
 from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, \

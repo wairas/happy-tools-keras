@@ -3,8 +3,7 @@ import os
 import traceback
 
 from happy.evaluators.classification_evaluator import ClassificationEvaluator
-from happy.preprocessors.preprocessor import Preprocessor
-from happy.preprocessors.preprocessors import MultiPreprocessor
+from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.splitter.happy_splitter import HappySplitter
 from happy_keras.model.segmentation_model import KerasPixelSegmentationModel, create_false_color_image, \

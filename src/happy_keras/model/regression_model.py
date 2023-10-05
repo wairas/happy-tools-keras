@@ -1,5 +1,5 @@
 from happy.model.imaging_model import ImagingModel
-from happy.criteria.criteria import Criteria
+from happy.criteria import Criteria
 import numpy as np
 
 from keras.optimizers import Adam

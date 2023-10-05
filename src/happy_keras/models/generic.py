@@ -1,6 +1,6 @@
-from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
-from happy_keras.model.segmentation_model import KerasPixelSegmentationModel
-from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel
+from happy_keras.models.pixel_regression import KerasPixelRegressionModel
+from happy_keras.models.segmentation import KerasPixelSegmentationModel
+from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmentationModel
 
 
 class GenericKerasPixelRegressionModel(KerasPixelRegressionModel):

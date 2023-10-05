@@ -5,7 +5,7 @@ from matplotlib import cm
 from keras.optimizers import Adam
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, concatenate
 from tensorflow import keras
-from happy.model.imaging_model import ImagingModel
+from happy.models.imaging import ImagingModel
 
 
 class KerasPixelSegmentationModel(ImagingModel):

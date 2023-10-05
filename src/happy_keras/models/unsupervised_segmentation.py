@@ -6,7 +6,7 @@ from keras.optimizers import Adam
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, concatenate, Dense, Flatten, Multiply, Lambda
 from tensorflow import keras
-from happy.model.imaging_model import ImagingModel
+from happy.models.imaging import ImagingModel
 from tensorflow.keras.losses import MeanSquaredError
 from tensorflow.keras.constraints import Constraint
 

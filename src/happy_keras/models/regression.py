@@ -1,4 +1,4 @@
-from happy.model.imaging_model import ImagingModel
+from happy.models.imaging import ImagingModel
 from happy.criteria import Criteria
 import numpy as np
 

@@ -5,8 +5,8 @@ import traceback
 
 from happy.base.core import load_class
 from happy.splitters import HappySplitter
-from happy_keras.model.generic import GenericKerasUnsupervisedSegmentationModel
-from happy_keras.model.unsupervised_segmentation_model import KerasUnsupervisedSegmentationModel, \
+from happy_keras.models.generic import GenericKerasUnsupervisedSegmentationModel
+from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmentationModel, \
     create_prediction_image, create_false_color_image
 
 

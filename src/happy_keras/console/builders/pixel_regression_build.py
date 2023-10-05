@@ -5,11 +5,11 @@ import traceback
 import numpy as np
 
 from happy.evaluators import RegressionEvaluator
-from happy.model.spectroscopy_model import create_false_color_image
+from happy.models.spectroscopy import create_false_color_image
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
 from happy.splitters import HappySplitter
-from happy_keras.model.pixel_regression_model import KerasPixelRegressionModel
+from happy_keras.models.pixel_regression import KerasPixelRegressionModel
 
 
 def default_preprocessors() -> str:

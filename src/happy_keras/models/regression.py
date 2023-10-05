@@ -1,5 +1,5 @@
 from happy.models.imaging import ImagingModel
-from happy.criteria import Criteria
+from happy.criteria import Criteria, OP_NOT_MISSING
 import numpy as np
 
 from keras.optimizers import Adam
@@ -19,7 +19,7 @@ class KerasImageRegressionModel(ImagingModel):
             return happy_data.get_meta_global_data(self.target)
         else:
             # find any target in image and assume it applies to all...
-            crit1 = Criteria("not_missing", key=self.target)
+            crit1 = Criteria(OP_NOT_MISSING, key=self.target)
             pixels,_ = happy_data.find_pixels_with_criteria(crit1)
             if not pixels:
                 return None

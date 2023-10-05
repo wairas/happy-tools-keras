@@ -4,7 +4,7 @@ import traceback
 
 import numpy as np
 
-from happy.evaluators.regression_evaluator import RegressionEvaluator
+from happy.evaluators import RegressionEvaluator
 from happy.model.spectroscopy_model import create_false_color_image
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor

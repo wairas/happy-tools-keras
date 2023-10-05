@@ -2,7 +2,7 @@ import argparse
 import os
 import traceback
 
-from happy.evaluators.classification_evaluator import ClassificationEvaluator
+from happy.evaluators import ClassificationEvaluator
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors.full_region_extractor import FullRegionExtractor
 from happy.splitter.happy_splitter import HappySplitter

@@ -14,7 +14,7 @@ from happy_keras.models.pixel_regression import KerasPixelRegressionModel
 
 def default_preprocessors() -> str:
     args = [
-        "crop -W 320 -H 648"
+        "crop -W 320 -H 648",
         "wavelength-subset -f 60 -t 189",
         "sni",
         "snv",

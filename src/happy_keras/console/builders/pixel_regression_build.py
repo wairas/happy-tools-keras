@@ -31,7 +31,7 @@ def main():
         prog="happy-keras-pixel-regression-build",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
-    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data', required=False, default=default_preprocessors())
+    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data. Either preprocessor command-line(s) or file with one preprocessor command-line per line.', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)

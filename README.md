@@ -28,8 +28,10 @@ optional arguments:
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
   -P PREPROCESSORS, --preprocessors PREPROCESSORS
-                        The preprocessors to apply to the data (default: crop
-                        -W 320 -H 648wavelength-subset -f 60 -t 189 sni snv
+                        The preprocessors to apply to the data. Either
+                        preprocessor command-line(s) or file with one
+                        preprocessor command-line per line. (default: crop -W
+                        320 -H 648 wavelength-subset -f 60 -t 189 sni snv
                         derivative -w 15 -d 1 pad -W 320 -H 648 -v 0 down-
                         sample)
   -t TARGET, --target TARGET
@@ -55,7 +57,9 @@ optional arguments:
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
   -P PREPROCESSORS, --preprocessors PREPROCESSORS
-                        The preprocessors to apply to the data (default:
+                        The preprocessors to apply to the data. Either
+                        preprocessor command-line(s) or file with one
+                        preprocessor command-line per line. (default:
                         wavelength-subset -f 60 -t 189 sni snv derivative -w
                         15 -d 1 pad -W 128 -H 128 -v 0)
   -t TARGET, --target TARGET
@@ -84,7 +88,9 @@ optional arguments:
   -d DATA_FOLDER, --data_folder DATA_FOLDER
                         Path to the data folder (default: None)
   -P PREPROCESSORS, --preprocessors PREPROCESSORS
-                        The preprocessors to apply to the data (default:
+                        The preprocessors to apply to the data. Either
+                        preprocessor command-line(s) or file with one
+                        preprocessor command-line per line. (default:
                         wavelength-subset -f 60 -t 189 snv derivative pad -W
                         128 -H 128 -v 0)
   -t TARGET, --target TARGET

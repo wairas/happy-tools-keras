@@ -26,7 +26,7 @@ def main():
         prog="happy-keras-unsupervised-build",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
-    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data', required=False, default=default_preprocessors())
+    parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data. Either preprocessor command-line(s) or file with one preprocessor command-line per line.', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
     parser.add_argument('-n', '--num_clusters', type=int, default=4, help='The number of clusters to use')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)

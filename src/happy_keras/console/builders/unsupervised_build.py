@@ -2,6 +2,7 @@ import argparse
 import os
 import traceback
 
+from happy.data import configure_envi_settings
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
 from happy.splitters import HappySplitter
@@ -21,6 +22,7 @@ def default_preprocessors() -> str:
 
 def main():
     # Parse command-line arguments
+    configure_envi_settings()
     parser = argparse.ArgumentParser(
         description='Build a Keras-based unsupervised segmentation model.',
         prog="happy-keras-unsupervised-build",

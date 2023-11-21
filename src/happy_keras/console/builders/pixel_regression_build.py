@@ -4,6 +4,7 @@ import traceback
 
 import numpy as np
 
+from happy.data import configure_envi_settings
 from happy.evaluators import RegressionEvaluator
 from happy.models.spectroscopy import create_false_color_image
 from happy.preprocessors import Preprocessor, MultiPreprocessor
@@ -26,6 +27,7 @@ def default_preprocessors() -> str:
 
 
 def main():
+    configure_envi_settings()
     parser = argparse.ArgumentParser(
         description='Evaluate a Keras-based pixel regression model.',
         prog="happy-keras-pixel-regression-build",

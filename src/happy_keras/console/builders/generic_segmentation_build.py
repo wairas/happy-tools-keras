@@ -4,6 +4,7 @@ import time
 import traceback
 
 from happy.base.core import load_class
+from happy.data import configure_envi_settings
 from happy.evaluators import ClassificationEvaluator
 from happy.splitters import HappySplitter
 from happy_keras.models.generic import GenericKerasPixelSegmentationModel
@@ -13,6 +14,7 @@ from happy_keras.models.segmentation import KerasPixelSegmentationModel, create_
 
 def main():
     # Parse command-line arguments
+    configure_envi_settings()
     parser = argparse.ArgumentParser(
         description='Build a Keras-based pixel segmentation model using specified class from Python module.',
         prog="happy-generic-keras-segmentation-build",

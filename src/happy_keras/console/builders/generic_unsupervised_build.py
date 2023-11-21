@@ -4,6 +4,7 @@ import time
 import traceback
 
 from happy.base.core import load_class
+from happy.data import configure_envi_settings
 from happy.splitters import HappySplitter
 from happy_keras.models.generic import GenericKerasUnsupervisedSegmentationModel
 from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmentationModel, \
@@ -12,6 +13,7 @@ from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmen
 
 def main():
     # Parse command-line arguments
+    configure_envi_settings()
     parser = argparse.ArgumentParser(
         description='Build a Keras-based unsuperivised model using specified class from Python module.',
         prog="happy-generic-keras-unsupervised-build",

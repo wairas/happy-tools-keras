@@ -6,7 +6,7 @@ import traceback
 import numpy as np
 
 from happy.base.core import load_class
-from happy.data import configure_envi_settings
+from happy.base.app import init_app
 from happy.evaluators import RegressionEvaluator
 from happy.models.spectroscopy import create_false_color_image
 from happy.splitters import HappySplitter
@@ -15,7 +15,7 @@ from happy_keras.models.pixel_regression import KerasPixelRegressionModel
 
 
 def main():
-    configure_envi_settings()
+    init_app()
     parser = argparse.ArgumentParser(
         description='Evaluate a Keras-based pixel regression model using specified class from Python module.',
         prog="happy-generic-keras-pixel-regression-build",

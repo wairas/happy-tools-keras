@@ -2,7 +2,7 @@ import argparse
 import os
 import traceback
 
-from happy.data import configure_envi_settings
+from happy.base.app import init_app
 from happy.evaluators import ClassificationEvaluator
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
@@ -24,7 +24,7 @@ def default_preprocessors() -> str:
 
 def main():
     # Parse command-line arguments
-    configure_envi_settings()
+    init_app()
     parser = argparse.ArgumentParser(
         description='Build a Keras-based pixel segmentation model.',
         prog="happy-keras-segmentation-build",

@@ -7,9 +7,9 @@ from happy.base.core import load_class
 from happy.base.app import init_app
 from happy.evaluators import ClassificationEvaluator
 from happy.splitters import HappySplitter
+from happy.models.segmentation import create_false_color_image, create_prediction_image
 from happy_keras.models.generic import GenericKerasPixelSegmentationModel
-from happy_keras.models.segmentation import KerasPixelSegmentationModel, create_false_color_image, \
-    create_prediction_image
+from happy_keras.models.segmentation import KerasPixelSegmentationModel
 
 
 def main():

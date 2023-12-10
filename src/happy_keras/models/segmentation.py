@@ -41,8 +41,8 @@ class KerasPixelSegmentationModel(ImagingModel):
         one_hot = np.eye(self.num_classes)[raw_y.reshape(-1)]
         one_hot = one_hot.reshape((height, width, self.num_classes))
         
-        print(f"raw_y-shape: {raw_y.shape}")
-        print(f"one_hot-shape: {one_hot.shape}")
+        self.logger().info(f"raw_y-shape: {raw_y.shape}")
+        self.logger().info(f"one_hot-shape: {one_hot.shape}")
         return one_hot
         
     def fit(self, id_list, target_variable):
@@ -60,13 +60,13 @@ class KerasPixelSegmentationModel(ImagingModel):
         #  y_train = np.array(filtered_arrays_y)
 
         for i in X_train:
-            print(i.shape)
+            self.logger().info(i.shape)
             
         for i in y_train:
-            print(i.shape)
+            self.logger().info(i.shape)
 
-        print("X_train shape:", X_train.shape)
-        print("y_train shape:", y_train.shape)
+        self.logger().info("X_train shape:", X_train.shape)
+        self.logger().info("y_train shape:", y_train.shape)
 
         learning_rate = 0.001
         adam_optimizer = Adam(learning_rate=learning_rate)

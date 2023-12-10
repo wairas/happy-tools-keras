@@ -24,9 +24,7 @@ class KerasImageRegressionModel(ImagingModel):
             if not pixels:
                 return None
             return happy_data.get_meta_data(x=pixels[0][0], y=pixels[0][1], key=self.target)
-        #print("No Y found")
-        return None
-        
+
     def fit(self, id_list, target_variable):
         # Implement the training logic for your Keras-based image regression model
         # Use Keras API to create and compile your model, and train it on the data
@@ -44,8 +42,8 @@ class KerasImageRegressionModel(ImagingModel):
         X_train = np.array(training_dataset["X_train"])
         y_train = np.array(training_dataset["y_train"])
         
-        print("X_train shape:", X_train.shape)
-        print("y_train shape:", y_train.shape)
+        self.logger().info("X_train shape:", X_train.shape)
+        self.logger().info("y_train shape:", y_train.shape)
 
         # Train the model
         
@@ -59,9 +57,9 @@ class KerasImageRegressionModel(ImagingModel):
             if logs['val_mae'] < best_val_loss:
                 
                 best_val_loss = logs['val_mae']
-                print("")
-                print("using")
-                print(best_val_loss)
+                self.logger().info("")
+                self.logger().info("using")
+                self.logger().info(best_val_loss)
                 best_model_weights = model.get_weights()
                 
         best_model_checkpoint = ModelCheckpoint(filepath=None, save_best_only=True, monitor='val_loss', mode='min')

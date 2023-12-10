@@ -73,7 +73,7 @@ class KerasPixelRegressionModel(ImagingModel):
 
     def create_keras_pixel_regression_model_resnet(self):
         input_shape = self.get_data_shape()  # Assuming (height, width, channels) input shape
-        print(input_shape)
+        self.logger().info(input_shape)
         # Create a CNN layer to learn features from the input data
         inputs = Input(shape=input_shape)
         cnn_features = Conv2D(3, kernel_size=(1, 1), activation="relu", padding="same")(inputs)
@@ -94,7 +94,7 @@ class KerasPixelRegressionModel(ImagingModel):
         # ... add more layers as needed
         # Calculate the expected dimensions of the flattened ResNet output
         expected_flatten_dim = input_shape[0] * input_shape[1]# * input_shape[2]
-        print(expected_flatten_dim)
+        self.logger().info(expected_flatten_dim)
 
         # Add a Dense layer with the expected_flatten_dim units
         x = Dense(expected_flatten_dim, activation="relu")(x)

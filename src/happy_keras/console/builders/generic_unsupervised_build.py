@@ -1,8 +1,10 @@
 import argparse
+import logging
 import os
 import time
 import traceback
 
+from wai.logging import add_logging_level, set_logging_level
 from happy.base.core import load_class
 from happy.base.app import init_app
 from happy.splitters import HappySplitter
@@ -11,12 +13,17 @@ from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmen
     create_prediction_image, create_false_color_image
 
 
+PROG = "happy-generic-keras-unsupervised-build"
+
+logger = logging.getLogger(PROG)
+
+
 def main():
     # Parse command-line arguments
     init_app()
     parser = argparse.ArgumentParser(
         description='Build a Keras-based unsuperivised model using specified class from Python module.',
-        prog="happy-generic-keras-unsupervised-build",
+        prog=PROG,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
     parser.add_argument('-P', '--python_file', type=str, help='The Python module with the model class to load')
@@ -25,10 +32,13 @@ def main():
     parser.add_argument('-n', '--num_clusters', type=int, default=4, help='The number of clusters to use')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
+    add_logging_level(parser, short_opt="-V")
 
     args = parser.parse_args()
-    
+    set_logging_level(logger, args.logging_level)
+
     # Create the output folder if it doesn't exist
+    logger.info("Creating output dir: %s" % args.output_folder)
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create a HappySplitter instance
@@ -48,9 +58,11 @@ def main():
         raise Exception("Unsupported base model class: %s" % str(c))
 
     # Fit the model
+    logger.info("Fitting model...")
     unsupervised_segmentation_model.fit(id_list=train_ids, target_variable=args.target)
     
     # Predict using the model
+    logger.info("Predicting...")
     predictions, _ = unsupervised_segmentation_model.predict(id_list=test_ids, return_actuals=False)
 
     # Save the predictions as PNG images

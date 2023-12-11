@@ -54,16 +54,20 @@ def main():
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create preprocessors
+    logger.info("Creating pre-processing")
     preproc = MultiPreprocessor(preprocessor_list=Preprocessor.parse_preprocessors(args.preprocessors))
 
-    # Create a FullRegionSelector instance
+    # Create a FullRegionExtractor instance
+    logger.info("Creating region extractor")
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
 
     # Create a HappySplitter instance
+    logger.info("Loading splits: %s" % args.happy_splitter_file)
     happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
 
     # Create a KerasPixelRegressionModel instance
+    logger.info("Creating model")
     pixel_regression_model = KerasPixelRegressionModel(
         data_folder=args.data_folder, target=args.target, region_selector=region_selector,
         happy_preprocessor=preproc)

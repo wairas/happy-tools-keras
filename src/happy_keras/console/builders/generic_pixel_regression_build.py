@@ -43,10 +43,12 @@ def main():
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create a HappySplitter instance
+    logger.info("Loading splits: %s" % args.happy_splitter_file)
     happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
 
     # create model
+    logger.info("Loading class %s from: %s" % (args.python_class, args.python_file))
     c = load_class(args.python_file, "happy_keras.generic_pixel_regression." + str(int(round(time.time() * 1000))), args.python_class)
     if issubclass(c, KerasPixelRegressionModel):
         pixel_regression_model = GenericKerasPixelRegressionModel.instantiate(

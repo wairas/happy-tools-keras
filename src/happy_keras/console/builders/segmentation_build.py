@@ -11,6 +11,7 @@ from happy.region_extractors import FullRegionExtractor
 from happy.splitters import HappySplitter
 from happy.models.segmentation import create_false_color_image, create_prediction_image
 from happy_keras.models.segmentation import KerasPixelSegmentationModel
+from happy.data import determine_label_indices, check_labels
 
 
 PROG = "happy-keras-segmentation-build"
@@ -39,7 +40,6 @@ def main():
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
     parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data. Either preprocessor command-line(s) or file with one preprocessor command-line per line.', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
-    parser.add_argument('-n', '--num_classes', type=int, default=4, help='The number of classes, used for generating the mapping')
     parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
     add_logging_level(parser, short_opt="-V")
@@ -47,12 +47,18 @@ def main():
     args = parser.parse_args()
     set_logging_level(logger, args.logging_level)
 
-    # there is an optional mapping file in happy data now, but TODO here.
+    # determine #classes from labels files
+    labels_ok = check_labels(args.happy_data_base_dir)
+    logger.info("labels OK: %s" % str(labels_ok))
+    indices = determine_label_indices(args.happy_data_base_dir)
+    logger.info("label indices: %s" % str(indices))
     mapping = {}
-    for i in range(args.num_classes):
+    num_labels = len(indices)
+    for i in range(num_labels):
         mapping[i] = i
 
     # preprocessing
+    logger.info("Creating pre-processing")
     preproc = MultiPreprocessor(preprocessor_list=Preprocessor.parse_preprocessors(args.preprocessors))
 
     # Create the output folder if it doesn't exist
@@ -60,17 +66,19 @@ def main():
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create a FullRegionSelector instance
+    logger.info("Creating region extractor")
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
+
+    # split
+    logger.info("Loading splits: %s" % args.happy_splitter_file)
     happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0,0)
 
     # Create a KerasPixelSegmentationModel instance
+    logger.info("Creating model")
     pixel_segmentation_model = KerasPixelSegmentationModel(
         data_folder=args.data_folder, target=args.target, region_selector=region_selector,
         mapping=mapping, happy_preprocessor=preproc)
-
-    # Load sample IDs (you can modify this based on your folder structure)
-    #sample_ids = [f.name for f in os.scandir(args.data_folder) if f.is_dir()]
 
     # Fit the model
     logger.info("Fitting model...")

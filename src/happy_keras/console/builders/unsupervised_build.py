@@ -46,6 +46,7 @@ def main():
     set_logging_level(logger, args.logging_level)
 
     # preprocessors
+    logger.info("Creating pre-processing")
     preproc = MultiPreprocessor(preprocessor_list=Preprocessor.parse_preprocessors(args.preprocessors))
 
     # Create the output folder if it doesn't exist
@@ -53,17 +54,19 @@ def main():
     os.makedirs(args.output_folder, exist_ok=True)
 
     # Create a FullRegionSelector instance
+    logger.info("Creating region extractor")
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
+
+    # splits
+    logger.info("Loading splits: %s" % args.happy_splitter_file)
     happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
     train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
     
     # Create a KerasUnsupervisedSegmentationModel instance
+    logger.info("Creating model")
     unsupervised_segmentation_model = KerasUnsupervisedSegmentationModel(
         data_folder=args.data_folder, target=args.target, num_clusters=args.num_clusters,
         region_selector=region_selector, happy_preprocessor=preproc)
-
-    # Load sample IDs (you can modify this based on your folder structure)
-    # sample_ids = [f.name for f in os.scandir(args.data_folder) if f.is_dir()]
 
     # Fit the model
     logger.info("Fitting model...")

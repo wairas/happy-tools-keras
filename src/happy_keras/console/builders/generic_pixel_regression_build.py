@@ -11,7 +11,7 @@ from happy.base.core import load_class
 from happy.base.app import init_app
 from happy.evaluators import RegressionEvaluator
 from happy.models.spectroscopy import create_false_color_image
-from happy.splitters import HappySplitter
+from happy.splitters import DataSplits
 from happy_keras.models.generic import GenericKerasPixelRegressionModel
 from happy_keras.models.pixel_regression import KerasPixelRegressionModel
 
@@ -31,7 +31,7 @@ def main():
     parser.add_argument('-P', '--python_file', type=str, help='The Python module with the model class to load')
     parser.add_argument('-c', '--python_class', type=str, help='The name of the model class to load')
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
-    parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
+    parser.add_argument('-s', '--splits_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
     add_logging_level(parser, short_opt="-V")
 
@@ -42,10 +42,10 @@ def main():
     logger.info("Creating output dir: %s" % args.output_folder)
     os.makedirs(args.output_folder, exist_ok=True)
 
-    # Create a HappySplitter instance
-    logger.info("Loading splits: %s" % args.happy_splitter_file)
-    happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
-    train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
+    # load the splits
+    logger.info("Loading splits: %s" % args.splits_file)
+    splits = DataSplits.load(args.splits_file)
+    train_ids, valid_ids, test_ids = splits.get_train_validation_test_splits(0, 0)
 
     # create model
     logger.info("Loading class %s from: %s" % (args.python_class, args.python_file))
@@ -64,8 +64,8 @@ def main():
     logger.info("Predicting...")
     predictions, actuals = pixel_regression_model.predict(id_list=test_ids, return_actuals=True)
 
-    evl = RegressionEvaluator(happy_splitter, pixel_regression_model, args.target)
-    evl.accumulate_stats(predictions,actuals, 0, 0)
+    evl = RegressionEvaluator(splits, pixel_regression_model, args.target)
+    evl.accumulate_stats(predictions, actuals, 0, 0)
     evl.calculate_and_show_metrics()
 
     max_actual = np.nanmax(actuals)

@@ -8,7 +8,7 @@ from happy.base.app import init_app
 from happy.evaluators import ClassificationEvaluator
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
-from happy.splitters import HappySplitter
+from happy.splitters import DataSplits
 from happy.models.segmentation import create_false_color_image, create_prediction_image
 from happy_keras.models.segmentation import KerasPixelSegmentationModel
 from happy.data import determine_label_indices, check_labels
@@ -40,7 +40,7 @@ def main():
     parser.add_argument('-d', '--data_folder', type=str, help='Path to the data folder', required=True)
     parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data. Either preprocessor command-line(s) or file with one preprocessor command-line per line.', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
-    parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
+    parser.add_argument('-s', '--splits_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
     add_logging_level(parser, short_opt="-V")
 
@@ -70,9 +70,9 @@ def main():
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
 
     # split
-    logger.info("Loading splits: %s" % args.happy_splitter_file)
-    happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
-    train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0,0)
+    logger.info("Loading splits: %s" % args.splits_file)
+    splits = DataSplits.load(args.splits_file)
+    train_ids, valid_ids, test_ids = splits.get_train_validation_test_splits(0, 0)
 
     # Create a KerasPixelSegmentationModel instance
     logger.info("Creating model")
@@ -87,7 +87,7 @@ def main():
     # Predict using the model
     logger.info("Predicting...")
     predictions, actuals = pixel_segmentation_model.predict(id_list=test_ids, return_actuals=True)
-    evl = ClassificationEvaluator(happy_splitter, pixel_segmentation_model, args.target)
+    evl = ClassificationEvaluator(splits, pixel_segmentation_model, args.target)
     evl.accumulate_stats(predictions, actuals, 0, 0)
     evl.calculate_and_show_metrics()
 

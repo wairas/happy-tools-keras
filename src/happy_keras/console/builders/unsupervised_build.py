@@ -7,7 +7,7 @@ from wai.logging import add_logging_level, set_logging_level
 from happy.base.app import init_app
 from happy.preprocessors import Preprocessor, MultiPreprocessor
 from happy.region_extractors import FullRegionExtractor
-from happy.splitters import HappySplitter
+from happy.splitters import DataSplits
 from happy_keras.models.unsupervised_segmentation import KerasUnsupervisedSegmentationModel, \
     create_prediction_image, create_false_color_image
 
@@ -38,7 +38,7 @@ def main():
     parser.add_argument('-P', '--preprocessors', type=str, help='The preprocessors to apply to the data. Either preprocessor command-line(s) or file with one preprocessor command-line per line.', required=False, default=default_preprocessors())
     parser.add_argument('-t', '--target', type=str, help='Name of the target variable', required=True)
     parser.add_argument('-n', '--num_clusters', type=int, default=4, help='The number of clusters to use')
-    parser.add_argument('-s', '--happy_splitter_file', type=str, help='Path to JSON file containing splits', required=True)
+    parser.add_argument('-s', '--splits_file', type=str, help='Path to JSON file containing splits', required=True)
     parser.add_argument('-o', '--output_folder', type=str, help='Path to the output folder', required=True)
     add_logging_level(parser, short_opt="-V")
 
@@ -58,9 +58,9 @@ def main():
     region_selector = FullRegionExtractor(region_size=None, target_name=args.target)
 
     # splits
-    logger.info("Loading splits: %s" % args.happy_splitter_file)
-    happy_splitter = HappySplitter.load_splits_from_json(args.happy_splitter_file)
-    train_ids, valid_ids, test_ids = happy_splitter.get_train_validation_test_splits(0, 0)
+    logger.info("Loading splits: %s" % args.splits_file)
+    splits = DataSplits.load(args.splits_file)
+    train_ids, valid_ids, test_ids = splits.get_train_validation_test_splits(0, 0)
     
     # Create a KerasUnsupervisedSegmentationModel instance
     logger.info("Creating model")

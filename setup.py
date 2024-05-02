@@ -43,7 +43,10 @@ setup(
             "happy-keras-pixel-regression-build=happy_keras.console.builders.pixel_regression_build:sys_main",
             "happy-keras-segmentation-build=happy_keras.console.builders.segmentation_build:sys_main",
             "happy-keras-unsupervised-build=happy_keras.console.builders.unsupervised_build:sys_main",
-        ]
+        ],
+        "class_lister": [
+            "happy=happy_keras.class_lister",
+        ],
     },
     version="0.0.1",
     author='Dale Fletcher',

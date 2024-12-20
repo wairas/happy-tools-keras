@@ -13,7 +13,7 @@ def _read(f):
 
 
 setup(
-    name="happy-tools-keras",
+    name="happy_tools_keras",
     description="happy-tools that use the Keras library for Deep Learning on hyperspectral images.",
     long_description=(
         _read('DESCRIPTION.rst') + b'\n' +
@@ -27,7 +27,7 @@ setup(
     ],
     license='MIT License',
     install_requires=[
-        "happy-tools",
+        "happy_tools",
         "tensorflow==2.11.0",
         "matplotlib",
     ],

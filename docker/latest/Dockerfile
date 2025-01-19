@@ -13,7 +13,8 @@ RUN apt-get update && \
        libxrender-dev \
        libxext6 \
        libgl1-mesa-glx \
-       libpq-dev && \
+       libpq-dev \
+       cargo && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip3 --no-cache-dir install \

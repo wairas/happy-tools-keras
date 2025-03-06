@@ -27,7 +27,7 @@ setup(
     ],
     license='MIT License',
     install_requires=[
-        "happy_tools",
+        "happy_tools_core",
         "tensorflow==2.11.0",
         "matplotlib",
     ],
